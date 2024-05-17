@@ -29,6 +29,7 @@ The project has a couple of dependencies that need to be installed. You can inst
 pip install cryptography
 pip install requests
 pip install tk
+```
 
 ## Security Considerations
 
