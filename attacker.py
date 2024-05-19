@@ -47,7 +47,7 @@ def listen_to_communication():
     while True:
         encrypted_message = client_socket.recv(1024)
         message = rsa.decrypt_message(encrypted_message, aes_key)
-        print(f"Received message: {message}")
+        print(f"\nReceived message: {message}")
 
 # Ask the user to whether he wants to guess a password or listen to communication
 listen_or_attack = input("Enter whether to listen or guess password (1 for listening, other char for password guessing): ")
@@ -124,10 +124,15 @@ else:
     encrypted_message = rsa.encrypt_message(message, aes_key)
     client_socket.send(encrypted_message)
 
-    # Ask the user if they want to listen to messages
-    mode = input("Do you want to listen to messages? (yes/no): ")
+    # Start the listening thread
+    listening_thread = threading.Thread(target=listen_to_communication)
+    listening_thread.start()
 
-    if mode.lower() == 'yes':
-        # Start the listening thread
-        listening_thread = threading.Thread(target=listen_to_communication)
-        listening_thread.start()
+    # Allow the user to send messages
+    user_message = input("Enter your message (type 'exit' to quit): ")
+    while user_message.lower() != 'exit':
+        formatted_user_message = f"{guessedUsername}: {user_message}\n"
+        encrypted_user_message = rsa.encrypt_message(formatted_user_message, aes_key)
+        client_socket.send(encrypted_user_message)
+        user_message = input("Enter your message (type 'exit' to quit): ")
+

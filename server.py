@@ -67,7 +67,9 @@ def handle_client(client):
         # Remove the client from the clients list if it exists
         if client in clients:
             clients.remove(client)
+            del aes_keys[client]  # Remove the AES key associated with this client
         print(clients)
+        # print(aes_keys)
 
 
 # Create a hashed password
@@ -115,6 +117,7 @@ def receive():
         # Decrypt AES key
         aes_key = rsa.decrypt_aes_key(private_key, encrypted_aes_key)
         aes_keys[client] = aes_key  # Store the AES key for the client
+        # print(aes_keys)
 
         while True:
             username = client.recv(1024).decode('utf-8') 
@@ -138,6 +141,7 @@ def receive():
                 client.send('you are now connected!\n'.encode('utf-8'))
                 break
         clients.append(client)
+        # print(clients)
         print(f'The username of this client is {username}'.encode('utf-8'))
         broadcast(f'{username} has connected to the chat room\n')
         thread = threading.Thread(target=handle_client, args=(client,))
