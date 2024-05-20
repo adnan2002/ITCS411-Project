@@ -16,13 +16,13 @@ chat_box = None
 message_box = None
 
 # Create a SSL context
-context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
 context.load_verify_locations('./server.crt')
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Wrap the client socket with SSL
-client_socket = context.wrap_socket(client_socket, server_hostname=socket.gethostname())
+client_socket = context.wrap_socket(client_socket, server_hostname='localhost')
 
 
 client_socket.connect(('127.0.0.1', 12345))
