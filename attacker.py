@@ -42,12 +42,21 @@ encrypted_aes_key = rsa.encrypt_aes_key(public_key, aes_key)
 # Send encrypted AES key to server
 client_socket.send(encrypted_aes_key)
 
-# Function to listen to communication
+# Function to listen to encrypted communication
+def listen_to_communication_encrypted():
+    while True:
+        encrypted_message = client_socket.recv(1024)
+        print(f"\nReceived message: {encrypted_message}")
+
+
+# Function to listen to decrypted communication
 def listen_to_communication():
     while True:
         encrypted_message = client_socket.recv(1024)
         message = rsa.decrypt_message(encrypted_message, aes_key)
         print(f"\nReceived message: {message}")
+
+
 
 # Ask the user to whether he wants to guess a password or listen to communication
 listen_or_attack = input("Enter whether to listen or guess password (1 for listening, other char for password guessing): ")
@@ -62,7 +71,7 @@ if listen_or_attack == '1':
         response = client_socket.recv(1024).decode('utf-8')
         if response == 'you are now connected!\n':
             break
-    listen_to_communication()
+    listen_to_communication_encrypted()
 
 
 
